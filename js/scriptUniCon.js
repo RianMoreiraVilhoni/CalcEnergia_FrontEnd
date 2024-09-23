@@ -1,71 +1,65 @@
 document.addEventListener("DOMContentLoaded", function () {
-    fetchUniCon();
+    fetchUnidadesConsumidoras();
 
-    document.getElementById('UniConFormElement').addEventListener('submit', function (event) {
-        event.preventDefault();
-        saveUniCon();
+    document.getElementById('unidadeFormElement').addEventListener('submit', function (event) {
+        event.preventDefault(); // Previne o recarregamento da página
+        saveUnidadeConsumidora();
     });
 });
 
-
-function fetchUniCon() {
+function fetchUnidadesConsumidoras() {
     fetch('http://localhost:8000/unidades-consumidoras')
         .then(response => {
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error('Erro ao buscar unidades consumidoras');
             }
             return response.json();
         })
         .then(data => {
-            console.log(data.unidades_consumidoras);
-            const list = document.getElementById('UniConList');
-            if (!list) {
-                console.error("Error: Element with ID 'UniConList' not found.");
-                return;
-            }
-
+            console.log('Dados recebidos:', data);
+            const list = document.getElementById('unidadesList');
             list.innerHTML = '<ul class="list-group border border-danger">';
-            data.unidades_consumidoras.forEach(UniCon => {
+            data.unidades_consumidoras.forEach(unidade => {
                 list.innerHTML += `
                     <li class="list-group-item m-2 p-2 border-bottom">
                         <div class="row d-flex justify-content-between">
-                            <div class="col"><strong>${UniCon.nome} - R$ ${UniCon.tipo_id}</strong></div>
-                            <div class="col">
-                                <button class="btn btn-info btn-sm float-end ms-2" onclick="showEditFormUniCon(${UniCon.id}, '${UniCon.nome}', ${UniCon.tipo_id})">Editar</button>
+                            <div class="col"> <strong>${unidade.nome}</strong> - Tipo ID: ${unidade.tipo_id}</div>
+                            <div class="col"> 
+                                <button class="btn btn-info btn-sm float-end ms-2" 
+                                    onclick="showEditUnidadeForm(${unidade.id}, '${unidade.nome}', ${unidade.tipo_id})">Editar</button>
                             </div>
-                            <div class="col">
-                                <button class="btn btn-danger btn-sm float-end" onclick="deleteUniCon(${UniCon.id})">Deletar</button>
+                            <div class="col"> 
+                                <button class="btn btn-danger btn-sm float-end" 
+                                    onclick="deleteUnidade(${unidade.id})">Deletar</button>
                             </div>
                         </div>
                     </li>`;
             });
             list.innerHTML += '</ul>';
         })
-        .catch(error => {
-            console.error("Error fetching UniCon:", error);
-        });
+        .catch(error => console.error('Erro ao buscar unidades consumidoras:', error));
 }
 
-function showAddFormUniCon() {
+function showAddUnidadeForm() {
     document.getElementById('unidadeForm').classList.remove('d-none');
-    document.getElementById('UniConId').value = '';
+    document.getElementById('unidadeId').value = '';
     document.getElementById('nome').value = '';
-    document.getElementById('tipo_id').value = '';  // Aqui, mantendo consistência com o fetchUniCon
+    document.getElementById('tipo_id').value = '';
     document.getElementById('formTitle').innerText = 'Adicionar Unidade Consumidora';
 }
 
-function showEditFormUniCon(id, nome, tipo_id) {  // Consistência com tipo_id
-    document.getElementById('UniConForm').classList.remove('d-none');
-    document.getElementById('UniConId').value = id;
+function showEditUnidadeForm(id, nome, tipo_id) {
+    document.getElementById('unidadeForm').classList.remove('d-none');
+    document.getElementById('unidadeId').value = id;
     document.getElementById('nome').value = nome;
-    document.getElementById('tipo_id').value = tipo_id;  // Usar tipo_id em vez de tipo
+    document.getElementById('tipo_id').value = tipo_id;
     document.getElementById('formTitle').innerText = 'Editar Unidade Consumidora';
 }
 
-function saveUniCon() {
-    const id = document.getElementById('UniConId').value;
+function saveUnidadeConsumidora() {
+    const id = document.getElementById('unidadeId').value;
     const nome = document.getElementById('nome').value;
-    const tipo_id = parseFloat(document.getElementById('tipo_id').value);  // Consistência com tipo_id
+    const tipo_id = parseInt(document.getElementById('tipo_id').value, 10);
     const method = id ? 'PATCH' : 'POST';
     const url = id ? `http://localhost:8000/unidades-consumidoras/${id}` : 'http://localhost:8000/unidades-consumidoras';
 
@@ -74,37 +68,30 @@ function saveUniCon() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ nome, tipo_id })  // Corrigir nome da propriedade enviada
+        body: JSON.stringify({ nome: nome, tipo_id: tipo_id })
     })
-        .then(response => {
-            if (!response.ok) {
-                return response.text().then(errorText => {
-                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-                });
-            }
-            return response.json();
-        })
-        .then(() => {
-            fetchUniCon();
-            document.getElementById('UniConForm').classList.add('d-none');
-        })
-        .catch(error => {
-            console.error("Error saving UniCon:", error);
-        });
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erro ao salvar unidade consumidora');
+        }
+        return response.json();
+    })
+    .then(() => {
+        fetchUnidadesConsumidoras();
+        document.getElementById('unidadeForm').classList.add('d-none');
+    })
+    .catch(error => console.error('Erro ao salvar unidade consumidora:', error));
 }
 
-function deleteUniCon(id) {
+function deleteUnidade(id) {
     fetch(`http://localhost:8000/unidades-consumidoras/${id}`, {
         method: 'DELETE'
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(() => fetchUniCon())
-        .catch(error => {
-            console.error("Error deleting UniCon:", error);
-        });
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erro ao deletar unidade consumidora');
+        }
+        fetchUnidadesConsumidoras();
+    })
+    .catch(error => console.error('Erro ao deletar unidade consumidora:', error));
 }

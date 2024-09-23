@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Energy Consumption Calculator</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f0f2f5;
+      font-family: 'Arial', sans-serif;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #495057;
+      font-weight: bold;
+    }
+
+    .form-group {
+      background-color: #ffffff;
+      border: 1px solid #ced4da;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+
+    label {
+      font-weight: bold;
+      color: #343a40;
+    }
+
+    select {
+      border-radius: 5px;
+    }
+
+    #resultado {
+      background-color: #e9ecef;
+      border: 1px solid #ced4da;
+      border-radius: 8px;
+      padding: 20px;
+      font-size: 20px;
+      text-align: center;
+      color: #343a40;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+
+    .btn-success {
+      background-color: #28a745;
+      border: none;
+    }
+
+    .btn-success:hover {
+      background-color: #218838;
+    }
+    .brutalist-card__actions {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.brutalist-card__button {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  border: 3px solid #000;
+  background-color: #fff;
+  color: #000;
+  position: relative;
+  transition: all 0.2s ease;
+  box-shadow: 5px 5px 0 #000;
+  overflow: hidden;
+  text-decoration: none;
+  margin-bottom: 1rem;
+}
+
+.brutalist-card__button--read {
+  background-color: #000;
+  color: #fff;
+}
+
+.brutalist-card__button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: all 0.6s;
+}
+
+.brutalist-card__button:hover::before {
+  left: 100%;
+}
+
+.brutalist-card__button:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 #000;
+}
+
+.brutalist-card__button--mark:hover {
+  background-color: #000;
+  border-color: #000;
+  color: #fff;
+  box-shadow: 7px 7px 0 #303030;
+}
+
+.brutalist-card__button--read:hover {
+  background-color: #ff0000;
+  border-color: #ff0000;
+  color: #fff;
+  box-shadow: 7px 7px 0 #800000;
+}
+
+.brutalist-card__button:active {
+  transform: translate(5px, 5px);
+  box-shadow: none;
+}
+  </style>
+</head>
+
+<body>
+  <div class="container mt-5">
+    <h2>Calculadora de Consumo de Energia</h2>
+
+    <!-- Seleção de Unidade Consumidora -->
+    <div class="form-group">
+      <label for="unidadeConsumidoraSelect">Unidade Consumidora</label>
+      <select id="unidadeConsumidoraSelect" class="form-control"></select>
+    </div>
+
+    <!-- Seleção de Bandeira Tarifária -->
+    <div class="form-group">
+      <label for="bandeiraSelect">Bandeira Tarifária</label>
+      <select id="bandeiraSelect" class="form-control"></select>
+    </div>
+
+    <!-- Lista de Dispositivos -->
+    <div class="form-group">
+      <label for="listaDispositivos">Dispositivos Disponíveis</label>
+      <div id="listaDispositivos"></div>
+    </div>
+
+    <!-- Botão para buscar dispositivos -->
+    <button class="brutalist-card__actions" onclick="buscarDispositivosPorUnidade()" style="border: none;">
+      <a class="brutalist-card__button brutalist-card__button--mark">
+        Buscar Dispositivos
+      </a> 
+    </button>
+
+    <!-- Botão para calcular -->
+    <button class="brutalist-card__actions" onclick="calcularConsumo()" style="border: none;">
+      <a class="brutalist-card__button brutalist-card__button--mark">Calcular</a>
+    </button>
+
+    <!-- Resultado -->
+    <div id="resultado" class="mt-3" style="display: flex;flex-direction: column;"></div>
+  </div>
+
+  <script src="js/calc.js"></script>
+</body>
+
+</html>
